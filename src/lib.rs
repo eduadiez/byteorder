@@ -68,9 +68,14 @@ cases.
 */
 
 #![deny(missing_docs)]
-#![cfg_attr(not(feature = "std"), no_std)]
+#![cfg_attr(not(all(target_env = "sgx", feature = "std")), no_std)]
+#![cfg_attr(all(target_env = "sgx", feature = "std"), feature(rustc_private))]
 
-#[cfg(feature = "std")]
+#[cfg(not(target_env = "sgx"))]
+#[macro_use]
+extern crate sgx_tstd as std;
+ 
+#[cfg(all(target_env = "sgx", feature = "std"))]
 extern crate core;
 
 #[cfg(test)]
